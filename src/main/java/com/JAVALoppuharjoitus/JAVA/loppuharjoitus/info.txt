@@ -1,2 +1,3 @@
-1 Javakurssi
-2 Huonokurssi
+1 Javakurssi Marko
+2 Testikurssi Marko
+3 Huonokurssi Mikko

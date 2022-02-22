@@ -14,12 +14,12 @@ import java.util.Scanner;
 @RestController
 public class MyController {
 
-    List<Students> students = new ArrayList<>();
-    List<Courses> courses = new ArrayList<>();
+    /*List<Students> students = new ArrayList<>();
+    List<Courses> courses = new ArrayList<>();*/
     File courseFile = new File("C:\\Users\\jjmal\\Java loppuharjootus\\JAVA-loppuharjoitus\\src\\main\\java\\com\\JAVALoppuharjoitus\\JAVA\\loppuharjoitus\\info.txt");
+    File dumpFile = new File("C:\\Users\\jjmal\\Java loppuharjootus\\JAVA-loppuharjoitus\\src\\main\\java\\com\\JAVALoppuharjoitus\\JAVA\\loppuharjoitus\\dump.txt");
 
-
-    @PostMapping("addstudent")
+    /*@PostMapping("addstudent")
     public String addStudent(@RequestParam String fnames, @RequestParam String lnames, @RequestParam String addresss, @RequestParam String sid) throws IOException {
         Students s = new Students(fnames, lnames, addresss, sid);
         students.add(s);
@@ -29,7 +29,7 @@ public class MyController {
     @GetMapping("students")
     public List<Students> getAllStudents() {
         return students;
-    }
+    }*/
 
    /* @PostMapping("addcourse")
     public String addCourse(@RequestParam String coursename, @RequestParam String courseteacher, @RequestParam String cid) {
@@ -49,7 +49,7 @@ public class MyController {
         while (reader.hasNextLine()) {
             String line = reader.nextLine();
             String[] tokens = line.split(" ");
-                System.out.println(tokens[0] + " " + tokens[1]);
+                System.out.println(tokens[0] + " " + tokens[1] + " " + tokens[2]);
             if(id.equals(tokens[0])){
                 System.out.println(line);
                 reader.close();
@@ -67,7 +67,7 @@ public class MyController {
         while (reader.hasNextLine()) {
             String line = reader.nextLine();
             String[] tokens = line.split(" ");
-            System.out.println(tokens[0] + " " + tokens[1]);
+            System.out.println(tokens[0] + " " + tokens[1] + " " + tokens[2]);
             if(coursename.equals(tokens[1])){
                 System.out.println(line);
                 reader.close();
@@ -79,11 +79,38 @@ public class MyController {
         return "Antamallasi nimellä ei löydy kurssia.";
     }
 
+    @GetMapping("coursesbyteacher")
+    public String getCourseByTeacher(@RequestParam String teacher) throws FileNotFoundException {
+        Scanner reader = new Scanner(courseFile);
+        PrintWriter dumpWriter = new PrintWriter(dumpFile);
+        dumpWriter.print("");
+        //List<String> coursesToShow = new ArrayList<>();
+        while (reader.hasNextLine()) {
+            String line = reader.nextLine();
+            String[] tokens = line.split(" ");
+            System.out.println(tokens[0] + " " + tokens[1] + " " + tokens[2]);
+            if(teacher.equals(tokens[2])){
+                //coursesToShow.add(line);
+                dumpWriter.print(line + System.lineSeparator());
+                System.out.println(line);
+                /*reader.close();
+                return "<h3>" + line + "</h3>";*/
+            }
+
+
+        }
+        reader.close();
+        dumpWriter.close();
+        return dumpFile.toString();
+        /*reader.close();
+        return "Antamallasi nimellä ei löydy kurssia.";*/
+    }
+
 
     @PostMapping("addcourses")
-    public String addCourse(@RequestParam String id, @RequestParam String coursename) throws IOException {
+    public String addCourse(@RequestParam String id, @RequestParam String coursename, @RequestParam String teacher) throws IOException {
         FileWriter fw = new FileWriter(courseFile, true);
-        fw.write(id + " " + coursename + System.lineSeparator());
+        fw.write(id + " " + coursename + " " + teacher + System.lineSeparator());
         fw.close();
         return "Kurssi lisätty onnistuneesti.";
     }
