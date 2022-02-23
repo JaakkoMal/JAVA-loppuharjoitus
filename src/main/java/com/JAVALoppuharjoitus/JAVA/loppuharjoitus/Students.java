@@ -1,40 +1,40 @@
 package com.JAVALoppuharjoitus.JAVA.loppuharjoitus;
 
 public class Students {
-    private String fnames;
-    private String lnames;
-    private String addresss;
+    private String fname;
+    private String lname;
+    private String address;
     private String sid;
 
-    public Students(String fnames, String lnames, String addresss, String sid) {
-        this.fnames = fnames;
-        this.lnames = lnames;
-        this.addresss = addresss;
+    public Students(String fname, String lname, String address, String sid) {
+        this.fname = fname;
+        this.lname = lname;
+        this.address = address;
         this.sid = sid;
     }
 
-    public String getFnames() {
-        return fnames;
+    public String getFname() {
+        return fname;
     }
 
-    public void setFnames(String fnames) {
-        this.fnames = fnames;
+    public void setFname(String fname) {
+        this.fname = fname;
     }
 
     public String getLnames() {
-        return lnames;
+        return lname;
     }
 
-    public void setLnames(String lnames) {
-        this.lnames = lnames;
+    public void setLname(String lname) {
+        this.lname = lname;
     }
 
-    public String getAddresss() {
-        return addresss;
+    public String getAddress() {
+        return address;
     }
 
-    public void setAddresss(String addresss) {
-        this.addresss = addresss;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getSid() {

@@ -1,11 +1,14 @@
 package com.JAVALoppuharjoitus.JAVA.loppuharjoitus;
 
+import org.springframework.http.converter.json.GsonBuilderUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.crypto.spec.PSource;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.*;
@@ -17,16 +20,12 @@ public class MyController {
     /*List<Students> students = new ArrayList<>();
     List<Courses> courses = new ArrayList<>();*/
     File courseFile = new File("C:\\Users\\jjmal\\Java loppuharjootus\\JAVA-loppuharjoitus\\src\\main\\java\\com\\JAVALoppuharjoitus\\JAVA\\loppuharjoitus\\info.txt");
+    File studentFile = new File("C:\\Users\\jjmal\\Java loppuharjootus\\JAVA-loppuharjoitus\\src\\main\\java\\com\\JAVALoppuharjoitus\\JAVA\\loppuharjoitus\\studentinfo.txt");
     File dumpFile = new File("C:\\Users\\jjmal\\Java loppuharjootus\\JAVA-loppuharjoitus\\src\\main\\java\\com\\JAVALoppuharjoitus\\JAVA\\loppuharjoitus\\dump.txt");
 
-    /*@PostMapping("addstudent")
-    public String addStudent(@RequestParam String fnames, @RequestParam String lnames, @RequestParam String addresss, @RequestParam String sid) throws IOException {
-        Students s = new Students(fnames, lnames, addresss, sid);
-        students.add(s);
-        return "";
-    }
 
-    @GetMapping("students")
+
+    /*@GetMapping("students")
     public List<Students> getAllStudents() {
         return students;
     }*/
@@ -80,7 +79,7 @@ public class MyController {
     }
 
     @GetMapping("coursesbyteacher")
-    public String getCourseByTeacher(@RequestParam String teacher) throws FileNotFoundException {
+    public String getCourseByTeacher(@RequestParam String teacher) throws IOException {
         Scanner reader = new Scanner(courseFile);
         PrintWriter dumpWriter = new PrintWriter(dumpFile);
         dumpWriter.print("");
@@ -90,18 +89,20 @@ public class MyController {
             String[] tokens = line.split(" ");
             System.out.println(tokens[0] + " " + tokens[1] + " " + tokens[2]);
             if(teacher.equals(tokens[2])){
-                //coursesToShow.add(line);
                 dumpWriter.print(line + System.lineSeparator());
                 System.out.println(line);
-                /*reader.close();
-                return "<h3>" + line + "</h3>";*/
             }
 
 
         }
         reader.close();
         dumpWriter.close();
-        return dumpFile.toString();
+        String contentToShow = Files.readString(Path.of("C:\\Users\\jjmal\\Java loppuharjootus\\JAVA-loppuharjoitus\\src\\main\\java\\com\\JAVALoppuharjoitus\\JAVA\\loppuharjoitus\\dump.txt"));
+        if(contentToShow.equals("")){
+            return "Pelle";
+        }else {
+            return "<h3> " + contentToShow.replaceAll("(\r\n|\r|\n|\n\r)", "<br>") + "</h3>";
+        }
         /*reader.close();
         return "Antamallasi nimellä ei löydy kurssia.";*/
     }
@@ -113,6 +114,14 @@ public class MyController {
         fw.write(id + " " + coursename + " " + teacher + System.lineSeparator());
         fw.close();
         return "Kurssi lisätty onnistuneesti.";
+    }
+
+    @PostMapping("addstudent")
+    public String addStudent(@RequestParam String sid, @RequestParam String fname, @RequestParam String lname, @RequestParam String address) throws IOException {
+        FileWriter fw = new FileWriter(studentFile, true);
+        fw.write(sid + " " + fname + " " + lname + " " + address + System.lineSeparator());
+        fw.close();
+        return "Opiskelija lisätty onnistuneesti.";
     }
 
 }
