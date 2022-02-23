@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body style="background-color: black; margin-left: 300px;">
+<h3 style="color: cyan"> Due to GDPR reasons students cannot be searched by name or address. However, for reasons beyond understanding, you can search for all students :)</h3>
+<form method="GET" action="http://localhost:8080/allstudents">
+    <input type="submit" value="Show all students" style="border-radius: 25px; background-color: pink; font-weight: bold; font-size: 16px;">
+</form>
+<form method="GET" action="http://localhost:8080/studentbyid">
+    <label style="color:pink">Student ID:</label><br>
+    <input type="text" name="sid"><br>
+    <input type="submit" value="Submit" style="border-radius: 25px; background-color: pink; font-weight: bold; font-size: 16px;">
+</form>
+</body>
+</html>

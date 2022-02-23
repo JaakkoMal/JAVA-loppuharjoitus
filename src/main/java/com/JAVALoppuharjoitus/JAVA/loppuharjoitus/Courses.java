@@ -5,6 +5,7 @@ public class Courses {
     private String courseteacher;
     private String cid;
 
+    public Courses(){}
     public Courses(String coursename, String courseteacher, String cid) {
         this.coursename = coursename;
         this.courseteacher = courseteacher;
@@ -34,4 +35,5 @@ public class Courses {
     public void setCid(String cid) {
         this.cid = cid;
     }
+
 }
