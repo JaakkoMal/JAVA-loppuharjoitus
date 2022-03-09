@@ -1,4 +1,0 @@
-1 Javakurssi Marko Nistilä
-2 Kamakurssi Marko Senkka
-3 Huonokurssi Mikko Pelle
-4 Python Marko Narkonen

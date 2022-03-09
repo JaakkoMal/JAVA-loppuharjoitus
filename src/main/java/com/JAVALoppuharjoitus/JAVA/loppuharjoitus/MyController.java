@@ -19,154 +19,56 @@ import java.util.Scanner;
 @RestController
 public class MyController {
 
-    /*List<Students> students = new ArrayList<>();
-    List<Courses> courses = new ArrayList<>();*/
+
     Courses C  = new Courses();
-    File courseFile = new File("C:\\Users\\jjmal\\Java loppuharjootus\\JAVA-loppuharjoitus\\src\\main\\java\\com\\JAVALoppuharjoitus\\JAVA\\loppuharjoitus\\info.txt");
-    File studentFile = new File("C:\\Users\\jjmal\\Java loppuharjootus\\JAVA-loppuharjoitus\\src\\main\\java\\com\\JAVALoppuharjoitus\\JAVA\\loppuharjoitus\\studentinfo.txt");
-    File dumpFile = new File("C:\\Users\\jjmal\\Java loppuharjootus\\JAVA-loppuharjoitus\\src\\main\\java\\com\\JAVALoppuharjoitus\\JAVA\\loppuharjoitus\\dump.txt");
-    File studentsOnCourses = new File("C:\\Users\\jjmal\\Java loppuharjootus\\JAVA-loppuharjoitus\\src\\main\\java\\com\\JAVALoppuharjoitus\\JAVA\\loppuharjoitus\\studentsOnCourses.txt");
+    Students S = new Students();
+    File courseFile = new File("info.txt");
+    File studentFile = new File("studentinfo.txt");
+    File dumpFile = new File("dump.txt");
+    File studentsOnCourses = new File("studentsOnCourses.txt");
 
 
-    /*@GetMapping("students")
-    public List<Students> getAllStudents() {
-        return students;
-    }*/
 
-   /* @PostMapping("addcourse")
-    public String addCourse(@RequestParam String coursename, @RequestParam String courseteacher, @RequestParam String cid) {
-        Courses c = new Courses(coursename, courseteacher, cid);
-        courses.add(c);
-        return "Course added";
-    }*/
-
-    /*@GetMapping("courses")
-    public List<Courses> getAllCourses() {
-        return courses;
-    }*/
     @GetMapping("allcourses")
-    public String getAllCourses() throws IOException {
-        String contentToShow = Files.readString(Path.of("C:\\Users\\jjmal\\Java loppuharjootus\\JAVA-loppuharjoitus\\src\\main\\java\\com\\JAVALoppuharjoitus\\JAVA\\loppuharjoitus\\info.txt"));
-        if(contentToShow.equals("")){
-            return "There are no courses inserted in the system. You can add a course first to see if the application works.";
-        }else {
-            return "<h3> " + contentToShow.replaceAll("(\r\n|\r|\n|\n\r)", "<br>") + "</h3>";
-        }
+    public String kaikKurssit() throws IOException {
+        return C.getAllCourses();
     }
 
     @GetMapping("coursesbyid")
-    public String getCourseById(@RequestParam String id) throws FileNotFoundException {
-        Scanner reader = new Scanner(courseFile);
-        while (reader.hasNextLine()) {
-            String line = reader.nextLine();
-            String[] tokens = line.split(" ");
-                //System.out.println(tokens[0] + " " + tokens[1] + " " + tokens[2]);
-            if(id.equals(tokens[0])){
-                System.out.println(line);
-                reader.close();
-                String randy = "<form method='POST' action='http://localhost:8080/addstudenttocourse'><label style='color:pink'>Course ID:</label><br><input type='text' name='id' value=" + tokens[0] + "><br><label style='color:pink'>Student ID:</label><br><input type='text' name='sid'><br><input type='submit' value='Submit' style='border-radius: 25px; background-color: pink; font-weight: bold; font-size: 16px;'></form>";
-                return "<h3>" + line + "</h3>" + randy;
-            }
-
-        }
-        reader.close();
-        return "Antamallasi ID:llä ei löydy kurssia.";
+    public String kurssiIdlla(@RequestParam String id) throws FileNotFoundException {
+        return C.getCourseById(id, courseFile);
     }
 
     @GetMapping("coursesbyname")
-    public String getCourseByName(@RequestParam String coursename) throws FileNotFoundException {
-        Scanner reader = new Scanner(courseFile);
-        while (reader.hasNextLine()) {
-            String line = reader.nextLine();
-            String[] tokens = line.split(" ");
-            System.out.println(tokens[0] + " " + tokens[1] + " " + tokens[2]);
-            if(coursename.equals(tokens[1])){
-                System.out.println(line);
-                reader.close();
-                return "<h3>" + line + "</h3>";
-            }
-
-        }
-        reader.close();
-        return "Antamallasi nimellä ei löydy kurssia.";
+    public String kurssiNimella(@RequestParam String coursename) throws FileNotFoundException {
+        return C.getCourseByName(coursename, courseFile);
     }
 
+
     @GetMapping("coursesbyteacher")
-    public String getCourseByTeacher(@RequestParam String teacher) throws IOException {
-        Scanner reader = new Scanner(courseFile);
-        PrintWriter dumpWriter = new PrintWriter(dumpFile);
-        dumpWriter.print("");
-        //List<String> coursesToShow = new ArrayList<>();
-        while (reader.hasNextLine()) {
-            String line = reader.nextLine();
-            String[] tokens = line.split(" ");
-            //System.out.println(tokens[0] + " " + tokens[1] + " " + tokens[2]);
-            if(teacher.equals(tokens[2] + " " + tokens[3])){
-                dumpWriter.print(line + System.lineSeparator());
-                System.out.println(line);
-            }else if(teacher.equals(tokens[2])) {
-                dumpWriter.print(line + System.lineSeparator());
-                System.out.println(line);
-            } else if (teacher.equals(tokens[3])) {
-                dumpWriter.print(line + System.lineSeparator());
-                System.out.println(line);
-            }
-        }
-        reader.close();
-        dumpWriter.close();
-        String contentToShow = Files.readString(Path.of("C:\\Users\\jjmal\\Java loppuharjootus\\JAVA-loppuharjoitus\\src\\main\\java\\com\\JAVALoppuharjoitus\\JAVA\\loppuharjoitus\\dump.txt"));
-        if(contentToShow.equals("")){
-            return "Teacher " + teacher + " doesn't have any courses. Try another teacher." ;
-        }else {
-            return "<h3> " + contentToShow.replaceAll("(\r\n|\r|\n|\n\r)", "<br>") + "</h3>";
-        }
-        /*reader.close();
-        return "Antamallasi nimellä ei löydy kurssia.";*/
+    public String kurssiOpella(@RequestParam String teacher) throws IOException {
+        return C.getCourseByTeacher(teacher, courseFile, dumpFile);
     }
 
 
     @PostMapping("addcourses")
-    public String addCourse(@RequestParam String id, @RequestParam String coursename, @RequestParam String teacher) throws IOException {
-        FileWriter fw = new FileWriter(courseFile, true);
-        fw.write(id + " " + coursename + " " + teacher + System.lineSeparator());
-        fw.close();
-        return "Kurssi lisätty onnistuneesti.";
+    public String lisaaKurssi(@RequestParam String id, @RequestParam String coursename, @RequestParam String teacher) throws IOException {
+        return C.addCourse(id, coursename, teacher, courseFile);
     }
 
     @PostMapping("addstudent")
-    public String addStudent(@RequestParam String sid, @RequestParam String fname, @RequestParam String lname, @RequestParam String address) throws IOException {
-        FileWriter fw = new FileWriter(studentFile, true);
-        fw.write(sid + " " + fname + " " + lname + " " + address + System.lineSeparator());
-        fw.close();
-        return "Opiskelija lisätty onnistuneesti.";
+    public String lisaaOppilas(@RequestParam String sid, @RequestParam String fname, @RequestParam String lname, @RequestParam String address) throws IOException {
+        return S.addStudent(sid, fname, lname, address, studentFile);
     }
 
     @GetMapping("allstudents")
-    public String getAllStudents() throws IOException {
-        String contentToShow = Files.readString(Path.of("C:\\Users\\jjmal\\Java loppuharjootus\\JAVA-loppuharjoitus\\src\\main\\java\\com\\JAVALoppuharjoitus\\JAVA\\loppuharjoitus\\studentinfo.txt"));
-        if(contentToShow.equals("")){
-            return "There are no students inserted in the system. You can add a student first to see if the application works.";
-        }else {
-            return "<h3> " + contentToShow.replaceAll("(\r\n|\r|\n|\n\r)", "<br>") + "</h3>";
-        }
+    public String kaikOppilaat() throws IOException {
+        return S.getAllStudents();
     }
 
     @GetMapping("studentbyid")
-    public String getStudentById(@RequestParam String sid) throws FileNotFoundException {
-        Scanner reader = new Scanner(studentFile);
-        while (reader.hasNextLine()) {
-            String line = reader.nextLine();
-            String[] tokens = line.split(" ");
-            //System.out.println(tokens[0] + " " + tokens[1] + " " + tokens[2]);
-            if(sid.equals(tokens[0])){
-                System.out.println(line);
-                reader.close();
-                return "<h3>" + line + "</h3>";
-            }
-
-        }
-        reader.close();
-        return "Antamallasi ID:llä ei löydy kurssia.";
+    public String oppilasIdlla(@RequestParam String sid) throws FileNotFoundException {
+        return S.getStudentById(sid, studentFile);
     }
 
     @PostMapping("addstudenttocourse")
@@ -186,16 +88,16 @@ public class MyController {
                     }
                 reader.close();
                 cReader.close();
-                String studentLovesCourse = line + cline;
+                //String studentLovesCourse = line + cline;
                 FileWriter fw = new FileWriter(studentsOnCourses, true);
                 fw.write(line + " " + cline + System.lineSeparator());
                 fw.close();
-                return "<h3>" + line + " lisätty kurssille " + cline + "</h#3>";
+                return "<h3>" + line + "<br> added to course <br>" + cline + "</h3>";
             }
 
         }
         reader.close();
-        return "Pelle";
+        return "Student ID does not exist.";
     }
 
 }
