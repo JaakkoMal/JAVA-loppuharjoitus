@@ -23,7 +23,7 @@ public class Students {
         this.sid = sid;
     }*/
 
-
+//KATSO METODIEN TOIMINTA Courses-luokan kommentoinnista. Menee samalla kaavalla.
     public String getAllStudents() throws IOException {
         String contentToShow = Files.readString(Path.of("studentinfo.txt"));
         if(contentToShow.equals("")){

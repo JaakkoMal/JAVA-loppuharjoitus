@@ -19,7 +19,7 @@ import java.util.Scanner;
 @RestController
 public class MyController {
 
-
+//Luodaan oliot luokista, sekä tekstitiedostot opiskelija- ja kurssitietojen tallentamista varten
     Courses C  = new Courses();
     Students S = new Students();
     File courseFile = new File("info.txt");
@@ -27,7 +27,8 @@ public class MyController {
     File dumpFile = new File("dump.txt");
     File studentsOnCourses = new File("studentsOnCourses.txt");
 
-
+//Alla GET- ja POST-mappaukset opiskelija- ja kurssitietojen lukemiseen ja lisäämiseen. Palautetaan vastaavissa luokissa
+//määriteltyjen metodien tulokset ruudulle.
 
     @GetMapping("allcourses")
     public String kaikKurssit() throws IOException {
@@ -70,33 +71,39 @@ public class MyController {
     public String oppilasIdlla(@RequestParam String sid) throws FileNotFoundException {
         return S.getStudentById(sid, studentFile);
     }
-
+    //Lisätään oppilas kurssille. Tämä toiminnallisuus löytyy selaimella kun kurssia on etsitty kurssi-ID:llä.
+    //Aikarajoitteiden takia, en ehdi hienosäätää ja siirtää tätä nyt etusivulle, mutta toiminta tullee esille silti.
     @PostMapping("addstudenttocourse")
     public String addStuToCou(@RequestParam String sid, @RequestParam String id) throws IOException {
+        //Luodaan kaksi scanneria, joista toinen lukee kurssitietoja ja toinen opiskelijatietoja. Kts. Course -luokan
+        //metodeja, koska toiminta on aika sama, paitsi nyt luetaan kahdet tiedot.
         Scanner reader = new Scanner(studentFile);
         Scanner cReader = new Scanner(courseFile);
         while (reader.hasNextLine()) {
-            String line = reader.nextLine();
-            String cline = cReader.nextLine();
-            String[] tokens = line.split(" ");
-            String[] ctokens = line.split(" ");
+            String line = reader.nextLine(); //opiskelijatietojen muuttaminen string -muotoon
+            String cline = cReader.nextLine(); //kurssitietojen muuttaminen string -muotoon
+            String[] tokens = line.split(" "); //erotellaan opiskelijatiedoston sanat tokeneiksi
+            String[] ctokens = line.split(" "); //erotellaan kurssitiedoston sanat tokeneiksi
             //System.out.println(tokens[0] + " " + tokens[1] + " " + tokens[2]);
-            if(sid.equals(tokens[0])){
+            if(sid.equals(tokens[0])){ //Verrataan opiskelijatiedoston ID:tä parametrina annettuun ID:seen
                 System.out.println(line);
-                    if(id.equals(ctokens[0])){
+                    if(id.equals(ctokens[0])){ //Verrataan kurssitiedoston ID:tä annettuun ID:seen (hakukenttä täyttyy automaattisesti selaimessa)
                         System.out.println(cline);
                     }
                 reader.close();
                 cReader.close();
                 //String studentLovesCourse = line + cline;
-                FileWriter fw = new FileWriter(studentsOnCourses, true);
-                fw.write(line + " " + cline + System.lineSeparator());
+                FileWriter fw = new FileWriter(studentsOnCourses, true); //luodaan FileWriter kirjoittamaan löydetyt tiedot
+                fw.write(line + " " + cline + System.lineSeparator()); //Kirjoitetaan studentsOnCourses -tiedostoon oppilaan ja kurssin tiedot
                 fw.close();
+                //HOX. Selain ei näytä muuta kuin tiedon, että oppilas on lisätty kurssille. Jos haluat tarkistaa, tsekkaa studentsOnCourses tekstitiedosto.
                 return "<h3>" + line + "<br> added to course <br>" + cline + "</h3>";
             }
 
         }
         reader.close();
+        //Jos annettua opiskelija ID:tä ei löydy, palautetaan tieto käyttäjälle. Kurssin kohdalla tätä ei voi käydä, koska
+        //ainoa tapa mennä lisäämään oppilas kurssille on id:llä haetun kurssin kautta.
         return "Student ID does not exist.";
     }
 
